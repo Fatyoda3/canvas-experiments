@@ -2,7 +2,7 @@
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d');
-// const rangeBar = document.querySelector("#bar");
+const rangeBar = document.querySelector("#bar");
 
 var t;
 
@@ -30,20 +30,20 @@ class p {
     }
 
 }
-/* 
+
 rangeBar.addEventListener('input', (e) => {
 
     t = e.target.value;
     t = parseInt(t);
 
     
-}) */
+})
 
 
 function animate() {
     let RAND = Math.random() * 128 + 1
     c.clearRect(0, 0, canvas.width, canvas.height);
-    // requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
     for (let index = 0; index < canvas.width; index++) {
 
         pArr.push(new p(canvas, c));
