@@ -20,8 +20,8 @@ class HelixLine {
     this.centerX = centerX;
     this.centerY = centerY;
     this.rotation = rotation;
-    this.radius = 150 + Math.random() * 150; // Random radius for helix shape
-    this.height = 200 + Math.random() * 300; // Random height
+    this.radius = 150 + Math.random() * 150;
+    this.height = 200 + Math.random() * 300;
     this.colorGroups = {};
     this.createParticles(particleCount);
   }
@@ -128,7 +128,7 @@ setInterval(() => {
   for (const helix of helixLines) {
     helix.cycleColors();
   }
-}, 5000); // Every 5 seconds
+}, 5000); 
 
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
