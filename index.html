@@ -1,159 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Advanced Multi-Graph Plotter</title>
-<style>
-  body {
-    background-color: #fdf6e3;
-    font-family: Arial, sans-serif;
-    margin: 0; padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  #controls {
-    max-width: 900px;
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 15px;
-    align-items: center;
-  }
-  label {
-    font-weight: bold;
-    user-select: none;
-    display: flex;
-    flex-direction: column;
-    min-width: 140px;
-  }
-  input[type="number"], select, input[type="color"] {
-    margin-top: 5px;
-    padding: 6px 8px;
-    font-size: 16px;
-    width: 160px;
-  }
-  button {
-    padding: 8px 18px;
-    border: none;
-    background-color: #444;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    white-space: nowrap;
-  }
-  button:hover {
-    background-color: #222;
-  }
-  #graphsList {
-    max-width: 900px;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  #graphsList > div {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  #graphsList label {
-    min-width: auto;
-    font-weight: normal;
-  }
-  canvas {
-    border: 1px solid #ccc;
-    background: white;
-    max-width: 100%;
-    height: auto;
-    cursor: crosshair;
-  }
-  #legend {
-    margin-top: 10px;
-    max-width: 900px;
-    width: 100%;
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    font-size: 14px;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .color-box {
-    width: 18px;
-    height: 18px;
-    border-radius: 3px;
-    border: 1px solid #444;
-  }
-  #tooltip {
-    position: absolute;
-    background: #222;
-    color: #eee;
-    padding: 5px 8px;
-    border-radius: 4px;
-    pointer-events: none;
-    font-size: 12px;
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Random Shape Lines Animation</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #111;
+        overflow: hidden;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #eee;
+        display: flex;
+        flex-direction: column;
+      }
+      #controls {
+        background: #222;
+        padding: 10px 15px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+      label {
+        font-weight: 600;
+        user-select: none;
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+      }
+      input[type="number"] {
+        margin-top: 5px;
+        padding: 6px 8px;
+        font-size: 14px;
+        width: 100px;
+        border-radius: 4px;
+        border: none;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 7px 14px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      canvas {
+        flex: 1;
+        display: block;
+        background: #111;
+        cursor: crosshair;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controls">
+      <label for="lineCountInput">
+        Number of Lines:
+        <input
+          type="number"
+          id="lineCountInput"
+          value="500"
+          min="10"
+          max="2000"
+        />
+      </label>
+      <button id="applyBtn">Apply</button>
+      <button id="resetBtn">Reset Positions</button>
+    </div>
 
-<div id="controls">
-  <label for="graphSelect">
-    Select Graph:
-    <select id="graphSelect">
-      <option value="sin">y = sin(x)</option>
-      <option value="cos">y = cos(x)</option>
-      <option value="square">y = x²</option>
-      <option value="linear">y = x</option>
-      <option value="exp">y = eˣ</option>
-    </select>
-  </label>
+    <canvas id="canvas"></canvas>
 
-  <label for="graphColor">
-    Color:
-    <input type="color" id="graphColor" value="#007bff" />
-  </label>
-
-  <button id="addGraphBtn">Add Graph</button>
-  <button id="clearGraphsBtn">Clear All</button>
-</div>
-
-<div id="graphsList"></div>
-
-<div id="rangeControls" style="max-width: 900px; width: 100%; display: flex; gap: 15px; align-items: center; margin-bottom: 10px;">
-  <label for="xMinInput">
-    X Min:
-    <input type="number" id="xMinInput" value="0" step="0.1" />
-  </label>
-
-  <label for="xMaxInput">
-    X Max:
-    <input type="number" id="xMaxInput" value="10" step="0.1" />
-  </label>
-
-  <label for="stepsInput">
-    Steps:
-    <input type="number" id="stepsInput" value="200" min="10" max="2000" />
-  </label>
-
-  <button id="zoomInBtn">Zoom In</button>
-  <button id="zoomOutBtn">Zoom Out</button>
-  <button id="resetZoomBtn">Reset Zoom</button>
-</div>
-
-<canvas id="canvas" width="900" height="600"></canvas>
-
-<div id="legend"></div>
-<div id="tooltip"></div>
-<script src="assets/sinewaves.js" type="module"></script>
-
-</body>
+    <script src="assets/line.js" type="module"></script>
+  </body>
 </html>
