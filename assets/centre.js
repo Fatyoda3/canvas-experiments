@@ -4,14 +4,14 @@ const c = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Triangle vertex class
+
 class Triangle {
   constructor() {
     this.vertices = this.generateVertices();
     this.targetVertices = this.generateVertices();
     this.color = this.randomColor();
     this.frame = 0;
-    this.maxFrames = 300; // slower transition
+    this.maxFrames = 300; 
   }
 
   generateVertices() {
@@ -41,7 +41,7 @@ class Triangle {
       y: this.lerp(v.y, this.targetVertices[i].y),
     }));
 
-    // Fill triangle
+    
     c.beginPath();
     c.moveTo(interpolated[0].x, interpolated[0].y);
     for (let i = 1; i < 3; i++) {
@@ -51,12 +51,12 @@ class Triangle {
     c.fillStyle = this.color;
     c.fill();
 
-    // Stroke triangle
+    
     c.strokeStyle = this.color;
     c.lineWidth = 2;
     c.stroke();
 
-    // Draw glowing vertices
+    
     for (const v of interpolated) {
       const gradient = c.createRadialGradient(v.x, v.y, 0, v.x, v.y, 10);
       gradient.addColorStop(0, '#fff');
@@ -73,7 +73,7 @@ class Triangle {
   }
 }
 
-// Create multiple triangles spaced farther apart
+
 const NUM_TRIANGLES = 5;
 const triangles = Array.from({ length: NUM_TRIANGLES }, () => new Triangle());
 
