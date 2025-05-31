@@ -1,40 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="style.css"> -->
-
-    <link rel="shortcut icon" href="#" type="image/x-icon">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speed-Time-Distance Visualizer</title>
+    <link rel="shortcut icon" href="#" type="image/x-icon" />
     <style>
-        body {
-            background-color: rgb(0, 0, 0);
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f0f0f5;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      header {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+
+      p {
+        font-size: 0.95rem;
+        color: #555;
+      }
+
+      #controls {
+        margin: 20px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      input[type="number"] {
+        padding: 5px 10px;
+        font-size: 1rem;
+        width: 80px;
+      }
+
+      button {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        border: none;
+        background-color: #556ee6;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #4053c1;
+      }
+
+      canvas {
+        border: 1px solid #ccc;
+        background-color: white;
+        margin-bottom: 20px;
+        max-width: 95vw;
+        max-height: 90vh;
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 1.3rem;
         }
-
-        /* #canvas1 {
-
-            background-color: rgb(239, 239, 239);
-            width: 1200px;
-            height: 1000px;
-            position: absolute;
-            top: 50%;
-            bottom: 0;       
-            left: 50%;
-            transform: translate(-50%, -50%);
-            filter: blur(8px) contrast(200%);
-        } */
+      }
     </style>
-    <title>Line</title>
-</head>
+  </head>
 
-<body>
-    <!-- <input type="range" id="bar" min=-200 , max=200> -->
-    <canvas id="canvas1">
-
-    </canvas>
-    
-    <script type="module" src="assets/wave.js"></script>
-</body>
-
+  <body>
+    <header>
+      <h1>Speed vs Time Visualization</h1>
+      <p>
+        See how much time you actually save by speeding over short distances
+      </p>
+    </header>
+    <div id="controls">
+      <input type="number" id="distance" value="40" min="1" /> km
+      <button id="update">Update Graph</button>
+      <button id="download">Download PNG</button>
+    </div>
+    <canvas id="canvas1"></canvas>
+    <script type="module" src="assets/speed-time-distance.js"></script>
+  </body>
 </html>

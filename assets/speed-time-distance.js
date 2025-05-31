@@ -1,78 +1,137 @@
-const canvas = document.querySelector('canvas');
-console.log(canvas);
-const ctx = canvas.getContext("2d");
+// speed-time-distance.js
+const canvas = document.querySelector('#canvas1');
+const ctx = canvas.getContext('2d');
+const input = document.querySelector('#distance');
+const updateBtn = document.querySelector('#update');
+const downloadBtn = document.querySelector('#download');
 
-ctx.strokeStyle = 'orange';
+let distance = parseFloat(input.value);
+let unit = 'km/h';
 
-ctx.lineWidth = 4;
+const speeds = [10, 20, 30, 40, 50, 60, 80, 100];
 
-ctx.beginPath();
-ctx.moveTo(canvas.width / 2, 0);
-ctx.lineTo(canvas.width / 2, canvas.height);
-ctx.stroke();
-ctx.closePath();
-ctx.beginPath();
-ctx.moveTo(0, canvas.height / 2);
-ctx.lineTo(canvas.width, canvas.height / 2);
-ctx.stroke();
-ctx.closePath();
-
-const speeds = [20, 30, 40, 50, 60, 70, 80, 90, 100];
-
-const distance = 40;
-
-const timeToTravel = {};
-
-const stringTe = (i) => `${distance < speeds[i] ? (distance / speeds[i] * 60).toPrecision(2) + 'm' : distance / speeds[i] + 'hr'} `
-
-
-// ctx.moveTo(0, canvas.height / 2);
-ctx.moveTo(canvas.width / 2, canvas.height / 2);
-// ctx.arc(canvas.width / 2, canvas.height / 2 , 5 , 0 ,10);
-for (let i = speeds.length; i >= 0; i--) {
-
-    ctx.fillText(`${speeds[i]} km/h`, canvas.width / 2 - 50,- speeds[i] + 110, 200);
-
+function formatTime(time) {
+  return time < 1 ? `${(time * 60).toFixed(1)} min` : `${time.toFixed(2)} hr`;
 }
-for (let i = speeds.length; i >= 0; i--) {
+
+function drawPaperBackground() {
+  const lineSpacing = 20;
+  ctx.fillStyle = '#fffef8';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = '#eee';
+  ctx.lineWidth = 1;
+  for (let y = 0; y < canvas.height; y += lineSpacing) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = '#ccc';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < canvas.width; x += 100) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+}
+
+function drawGraph(dist) {
+  drawPaperBackground();
+
+  const originX = 80;
+  const originY = canvas.height - 80;
+
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 2;
+
+  // axes
+  ctx.beginPath();
+  ctx.moveTo(originX, originY);
+  ctx.lineTo(originX, 40);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(originX, originY);
+  ctx.lineTo(canvas.width - 40, originY);
+  ctx.stroke();
+
+  // draw speed lines
+  speeds.forEach(speed => {
+    const time = dist / speed;
+    const x = originX + time * 120;
+    const y = originY - speed * 2;
 
     ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = speed >= 60 ? 'red' : 'green';
+    ctx.moveTo(originX, originY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
 
-    ctx.fillStyle = "purple";
+    ctx.fillStyle = 'black';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(`${speed} ${unit}`, originX - 60, y + 4);
+    ctx.fillText(`${formatTime(time)}`, x + 5, y + 4);
 
-    ctx.arc((canvas.width / 2) + (distance / speeds[i]) * 75 - 2, -speeds[i] +110, 3, 0, Math.PI * 2);
-    ctx.font = "12px serif";
-    // ctx.strokeText("Hello world", 50, 90);
-    ctx.fillText(
-        stringTe(i),
-        (canvas.width / 2) + (distance / speeds[i]) * 75 + 4,
-        -speeds[i] +110, 200
-    )
-    timeToTravel[i] = distance / speeds;
-
+    // dot
+    ctx.beginPath();
+    ctx.fillStyle = speed >= 60 ? 'red' : 'green';
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
     ctx.fill();
+  });
 
-    ctx.closePath();
-
-
+  ctx.fillStyle = 'black';
+  ctx.font = '14px sans-serif';
+  ctx.fillText('Speed vs Time Graph', originX + 150, 30);
+  ctx.fillText('Time (h)', canvas.width - 80, originY + 30);
+  ctx.fillText('Speed (' + unit + ')', originX - 60, 50);
 }
 
-const data = canvas.toDataURL('image/png')
+updateBtn.addEventListener('click', () => {
+  distance = parseFloat(input.value);
+  drawGraph(distance);
+});
 
-// console.log(data);
+downloadBtn.addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.href = canvas.toDataURL();
+  link.download = 'speed_time_graph.png';
+  link.click();
+});
 
-// localStorage.setItem('data', data);
+const unitToggle = document.createElement('button');
+unitToggle.textContent = 'Switch to m/s';
+document.getElementById('controls').appendChild(unitToggle);
 
+unitToggle.addEventListener('click', () => {
+  if (unit === 'km/h') {
+    unit = 'm/s';
+    for (let i = 0; i < speeds.length; i++) {
+      speeds[i] = parseFloat((speeds[i] / 3.6).toFixed(2));
+    }
+    unitToggle.textContent = 'Switch to km/h';
+  } else {
+    unit = 'km/h';
+    for (let i = 0; i < speeds.length; i++) {
+      speeds[i] = parseFloat((speeds[i] * 3.6).toFixed(0));
+    }
+    unitToggle.textContent = 'Switch to m/s';
+  }
+  drawGraph(distance);
+});
 
-// console.log(localStorage.getItem('data'))
-//     ;
-canvas.addEventListener('click', () => {
-    const a = document.createElement('a')
+function resizeCanvas() {
+  canvas.width = Math.min(window.innerWidth * 0.95, 1000);
+  canvas.height = Math.min(window.innerHeight * 0.75, 700);
+}
 
-    a.href = String(data);
-    a.innerText = "oooohell";
-    console.log(a);
-    a.target = "_blank";
-    a.download = "my-canvas-png";
-    document.body.appendChild(a);
-})
+resizeCanvas();
+drawGraph(distance);
+
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  drawGraph(distance);
+});
